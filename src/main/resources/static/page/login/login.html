@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+<body style="background-color: whitesmoke;">
+<div id="app">
+    <div style="height: 910px;background-image: url('/img/bg-1.jpg') ">
+    <el-card class="box-card">
+        <div style="margin-top: 40px">
+            <el-input
+                    prefix-icon="el-icon-user"
+                    placeholder="请输入账号"
+                    v-model="account"
+                    clearable>
+            </el-input>
+            <div style="margin: 30px 0;"></div>
+            <el-input
+                    prefix-icon="el-icon-key"
+                    placeholder="请输入密码"
+                    v-model="password"
+                    show-password>
+            </el-input>
+            <div style="margin: 30px 0;"></div>
+            <el-button type="info" round class="login_button" v-on:click="userLogin">登录</el-button>
+        </div>
+    </el-card>
+    </div>
+</div>
+</body>
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="/js/axios.min.js"></script>
+<script>
+    var app ;
+    app = new Vue({
+        el: '#app',
+        data: {
+            account: '',
+            password:'',
+            msg:'',
+            code:'',
+            type:''
+        },
+        methods:{
+            openTip:function() {
+                this.$message({
+                    showClose: true,
+                    message: this.msg,
+                    type: this.type
+                });
+            },
+            userLogin:function () {
+                var this_ = this;
+                var param = {"account":this_.account,"passWord":this_.password};
+                axios.post("http://localhost:8989/user/userLogin",param).then(function (response) {
+                    this_.msg = response.data.msg;
+                    this_.code = response.data.code;
+                    if ("200" == this_.code){
+                        this_.type = 'success'
+                        window.location.href="page/admin/home.html";
+                    }else {
+                        this_.type = 'error'
+                    }
+                    this_.openTip();
+                })
+            },
+        }
+    })
+</script>
+<style>
+    .box-card {
+        position: absolute;
+        margin-top: 250px;
+        margin-left: 35%;
+        width: 480px;
+        background-color: rgba(241, 239, 239, 0.4);
+    }
+    .el-card__body{
+        height: 250px;
+    }
+    .el-input__inner{
+        background-color: transparent!important;
+    }
+    .login_button{
+        width: 100%;
+    }
+</style>
+</html>
